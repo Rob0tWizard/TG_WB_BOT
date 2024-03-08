@@ -3,17 +3,16 @@ import os
 
 from aiogram import Bot, Dispatcher, types
 from dotenv import find_dotenv, load_dotenv
-
-from handlers.user_private import user_private_router
-from common.bot_cmd_list import private
-
 load_dotenv(find_dotenv())
 
-ALLOW_UPDATES = ['message, edited_message']
+from common.bot_cmd_list import private
+from handlers.user_private import user_private_router
+
+ALLOW_UPDATES = ['message', 'edited_message']
 
 bot = Bot(token=os.getenv("TOKEN"))
-dp = Dispatcher()
 
+dp = Dispatcher()
 dp.include_router(user_private_router)
 
 
