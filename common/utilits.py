@@ -21,9 +21,9 @@ async def get_product_data(product_id):
 def format_product_data(product):
     name = product['name']
     id = product['id']
-    price = product.get('salePriceU', product.get('priceU'))  # Используйте salePriceU, если он есть, иначе priceU
+    price = product.get('salePriceU', product.get('priceU'))
     rating = product['rating']
-    quantity = sum(stock['qty'] for size in product['sizes'] for stock in size['stocks'])  # Суммируем количество по всем размерам и складам
+    quantity = sum(stock['qty'] for size in product['sizes'] for stock in size['stocks'])
     table = f"<b>Название</b>: {name}\n"
     table += f"<b>Артикул</b>: {id}\n"
     table += f"<b>Цена</b>: {price} ₽\n"

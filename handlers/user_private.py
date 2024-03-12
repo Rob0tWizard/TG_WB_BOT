@@ -1,10 +1,9 @@
-from aiogram import types, Dispatcher, F, Router
-from aiogram.client import bot
-from aiogram.client.session import aiohttp
+from aiogram import types,  F, Router
+
 from aiogram.filters import Command, CommandStart, or_f
-from aiogram.filters.state import StatesGroup, State
+from aiogram.filters.state import StatesGroup, State, StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.utils.markdown import hbold, hcode
+
 
 from common.utilits import format_product_data, get_product_data
 from keyboards import reply
@@ -23,7 +22,7 @@ async def start_cmd(message: types.Message):
     await message.answer("Выберите одну из команд:", reply_markup=keyboard)
 
 
-@user_private_router.message(F.text == "Получить информацию по товару")
+@user_private_router.message(StateFilter(None), or_f(Command('vendor'), F.text.lower() == "получить информацию по товару"))
 async def get_product_info(message: types.Message, state: FSMContext):
     await state.set_state(ProductInfo.waiting_for_id)
     await message.answer("Пожалуйста, введите артикул товара.")
@@ -40,6 +39,7 @@ async def process_product_id(message: types.Message, state: FSMContext):
         await message.answer(text, parse_mode='HTML')
     else:
         await message.answer("Не удалось получить информацию о товаре.")
+    await state.clear()
 
 
 @user_private_router.message(or_f(Command('stop'), (F.text == 'Остановить уведомления')))
@@ -49,9 +49,9 @@ async def stop_cmd(message: types.Message):
 
 
 @user_private_router.message(F.text == 'Получить информацию из БД')
-@user_private_router.message(Command('BD'))
+@user_private_router.message(Command('info'))
 async def info_cmd(message: types.Message):
-    await message.answer("BD",
+    await message.answer("DB",
                          reply_markup=reply.del_kb)
 
 # @user_private_router.message(F.text)
